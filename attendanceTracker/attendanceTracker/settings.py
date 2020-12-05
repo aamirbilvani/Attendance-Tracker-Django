@@ -26,7 +26,7 @@ SECRET_KEY = 'qxr$b#0o6_*dn!=gqo872%%s#0u7g*w1#7cb%w2=4hp)%9w!%9'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.221.131.164']
+ALLOWED_HOSTS = ['52.221.131.164','127.0.0.1']
 
 
 # Application definition
@@ -41,9 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken', 
+    'corsheaders',
 ]
 
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,7 +63,35 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'apis.AttendanceUser' 
+AUTH_USER_MODEL = 'apis.AttendanceUser'
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_REPLACE_HTTPS_REFERER = True
+
+
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with'
+]
 
 ROOT_URLCONF = 'attendanceTracker.urls'
 
