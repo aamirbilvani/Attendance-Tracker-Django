@@ -28,7 +28,6 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     
     
 @api_view(['GET'])
-@permission_classes((IsAuthenticated,))
 def getoffices(request):  
     queryset = Office.objects.all().order_by('name')
     serialized=OfficeSerializer(queryset,many=True)   
