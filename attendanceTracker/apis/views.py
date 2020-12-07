@@ -85,7 +85,7 @@ def register(request):
             'username':newuser.username,
             'fullname':newuser.fullname,
             'phone':newuser.phone,
-            'office':newuser.office.id,
+            'office_id':newuser.office.id,
             'token':token.key
             }
 
