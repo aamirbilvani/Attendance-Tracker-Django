@@ -66,6 +66,14 @@ def add_attendance(request):
         return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
         
         
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def logout(request):  
+    token=request.META['HTTP_AUTHORIZATION'][6:]
+    instance = Token.objects.get(key=token)
+    instance.delete()
+    response={'response':{'msg':'success','status':200}} 
+    return Response(response, status=status.HTTP_200_OK) 
         
 @api_view(['POST'])
 def register(request):

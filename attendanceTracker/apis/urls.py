@@ -17,4 +17,5 @@ urlpatterns = [
     path('add_attendance/', views.add_attendance, name='add_attendanceapi'),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('login/', views.login.as_view(), name='login'),
+    path('logout/', views.logout, name='logout'),
 ]
