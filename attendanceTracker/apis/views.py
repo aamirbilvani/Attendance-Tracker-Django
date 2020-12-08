@@ -50,7 +50,9 @@ def getattendance(request):
 def add_attendance(request):
     serialized = AttendanceSerializer(data=request.data)
     if serialized.is_valid():
-        theuser=AttendanceUser.objects.get(pk=serialized.data['user']) 
+        token=request.META['HTTP_AUTHORIZATION'][6:]
+        token_instance=Token.objects.get(key=token)
+        theuser=AttendanceUser.objects.get(pk=token_instance.user_id) 
         attendance = Attendance.objects.create(
             date=serialized.data['date'],
             time=serialized.data['time'],
