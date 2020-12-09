@@ -90,12 +90,14 @@ def register(request):
         )
          
         token=Token.objects.create(user=newuser)
+        
         data={
             'user_id':newuser.id,
             'username':newuser.username,
             'fullname':newuser.fullname,
             'phone':newuser.phone,
             'office_id':newuser.office.id,
+            'office_name':newuser.office.name,
             'token':token.key
             }
 
@@ -125,6 +127,7 @@ class login(ObtainAuthToken):
             'fullname': user.fullname,
             'phone': user.phone,
             'office_id': user.office.id, 
+            'office_name':user.office.name,
             'token': token.key,
             }
         }
