@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin  as BaseUserAdmin 
-from .models import AttendanceUser, Office,Attendance
+from .models import AttendanceUser, Office,Attendance,Crash,Analytics
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from django import forms
@@ -11,14 +11,30 @@ from django import forms
 
 class OfficeAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,{'fields': ['name','lat','lng']}), 
+        (None,{'fields': ['name','lat','lng','isactive','create_date','modified_date']}), 
+    ]  
+
+
+
+class AnalyticsAdmin(admin.ModelAdmin):
+    list_display = ('action','search_params','app_version','platform','brand','device','device_model','user')
+    fieldsets = [
+        (None,{'fields': ['action','search_params','app_version','platform','brand','device','device_model','user']}), 
+    ]  
+
+
+
+
+class CrashAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,{'fields': ['exception','app_version','platform','brand','device','device_model','isactive','create_date','modified_date']}), 
     ]  
 
 
 
 class AttendanceAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,{'fields': ['date','time','lat','lng','ispresent','user']}), 
+        (None,{'fields': ['date','time','lat','lng','ispresent','user','isactive','create_date','modified_date']}), 
     ]  
 
 
@@ -80,8 +96,9 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'fullname','phone','office')
     list_filter = ('office',)
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('fullname','phone','office')})
+        (None, {'fields': ('username', 'password','isactive','create_date','modified_date')}),
+        ('Personal info', {'fields': ('fullname','phone','office')}),
+        ('Analytics', {'fields': ('app_version', 'platform', 'brand', 'device', 'device_model')})
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -100,5 +117,7 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(Office,OfficeAdmin)  
 admin.site.register(AttendanceUser, UserAdmin)
 admin.site.register(Attendance, AttendanceAdmin)
+admin.site.register(Crash, CrashAdmin)
+admin.site.register(Analytics, AnalyticsAdmin)
 
 

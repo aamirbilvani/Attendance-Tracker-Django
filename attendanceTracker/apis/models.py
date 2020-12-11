@@ -8,8 +8,16 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from datetime import datetime
+   
+class BasicModel(models.Model):
+    isactive = models.BooleanField (null=True, default=True, blank=True) 
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+    modified_date = models.DateTimeField(default=datetime.now, blank=True) 
+
+    class Meta:
+        abstract = True
  
-class Office(models.Model):
+class Office(BasicModel):
     name=models.CharField (max_length=50, null=True, default=None, blank=True)
     lat=models.CharField (max_length=50, null=True, default=None, blank=True)
     lng=models.CharField (max_length=50, null=True, default=None, blank=True)
@@ -29,16 +37,23 @@ class Office(models.Model):
     class Meta:
       db_table = 'office_mst'  
       ordering = ['id']
-      
-      
-
-
+       
 class AttendanceUser(AbstractUser):
     
     fullname=models.CharField (max_length=50, null=True, default=None, blank=True) 
     phone=models.CharField (max_length=50, null=True, default=None, blank=True) 
     office=models.ForeignKey(Office, null=True, on_delete=models.CASCADE)
       
+    isactive = models.BooleanField (null=True, default=True, blank=True) 
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+    modified_date = models.DateTimeField(default=datetime.now, blank=True) 
+    
+    app_version=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    platform=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    brand=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device_model=models.CharField (max_length=50, null=True, default=None, blank=True)   
+    
     objects = CustomUserManager()
     
     def get_fullname(self):
@@ -53,9 +68,8 @@ class AttendanceUser(AbstractUser):
       db_table = 'attendance_user_mst'  
       ordering = ['id']
       
-      
-      
-class Attendance(models.Model):
+       
+class Attendance(BasicModel):
     date=models.DateField (null=True, default=datetime.now().date(), blank=True)
     time=models.TimeField (auto_now=False, auto_now_add=False, default=datetime.now().time(), blank=True)
     lat=models.CharField (max_length=50, null=True, default=None, blank=True) 
@@ -72,4 +86,37 @@ class Attendance(models.Model):
     class Meta:
       db_table = 'attendance_mst'  
       ordering = ['id']
+        
+class Crash(BasicModel):
+    
+    exception=models.TextField(null=True, default=None, blank=True) 
+    app_version=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    platform=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    brand=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device_model=models.CharField (max_length=50, null=True, default=None, blank=True)   
+        
+    def get_exception(self):
+        return self.exception 
+    class Meta:
+      db_table = 'crash_tb'  
+      ordering = ['id']
+      
        
+class Analytics(BasicModel):
+
+    action=models.CharField (max_length=50, null=True, default=None, blank=True)   
+    search_params=models.TextField(null=True, default=None, blank=True) 
+    app_version=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    platform=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    brand=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device=models.CharField (max_length=50, null=True, default=None, blank=True)  
+    device_model=models.CharField (max_length=50, null=True, default=None, blank=True)   
+    
+    user=models.ForeignKey(AttendanceUser, null=True, on_delete=models.CASCADE)
+        
+    def get_action(self):
+        return self.action 
+    class Meta:
+      db_table = 'analytics_tb'  
+      ordering = ['id']
