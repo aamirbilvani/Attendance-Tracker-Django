@@ -64,7 +64,7 @@ def add_attendance(request):
             ispresent=serialized.data['ispresent'],
             user=theuser,
         ) 
-        Analytics.objects.create(action='add_attendance',search_params='',app_version=theuser.app_version,platform=theuser.platform,brand=theuser.brand,device=theuser.device,device_model=theuser.device_model)
+        Analytics.objects.create(action='add_attendance',search_params='',app_version=theuser.app_version,platform=theuser.platform,brand=theuser.brand,device=theuser.device,device_model=theuser.device_model,user=theuser)
      
         response={'response':{'msg':'success','status':200,'data':serialized.data}} 
         return Response(response, status=status.HTTP_200_OK)
@@ -80,7 +80,9 @@ def logout(request):
     instance = Token.objects.get(key=token)
     theuser=AttendanceUser.objects.filter(isactive=True).get(pk=instance.user_id)
     instance.delete()
-    Analytics.objects.create(action='logout',search_params='',app_version=theuser.app_version,platform=theuser.platform,brand=theuser.brand,device=theuser.device,device_model=theuser.device_model)
+   
+    theuser=AttendanceUser.objects.filter(isactive=True).get(pk=instance.user_id)
+    Analytics.objects.create(action='logout',search_params='',app_version=theuser.app_version,platform=theuser.platform,brand=theuser.brand,device=theuser.device,device_model=theuser.device_model,user=theuser)
     
     response={'response':{'msg':'success','status':200}} 
     return Response(response, status=status.HTTP_200_OK) 
@@ -119,7 +121,7 @@ def register(request):
             device=serialized.data['device'],
             device_model=serialized.data['device_model'],
         )
-        Analytics.objects.create(action='register',search_params='',app_version=serialized.data['app_version'],platform=serialized.data['platform'],brand=serialized.data['brand'],device=serialized.data['device'],device_model=serialized.data['device_model'])
+        Analytics.objects.create(action='register',search_params='',app_version=serialized.data['app_version'],platform=serialized.data['platform'],brand=serialized.data['brand'],device=serialized.data['device'],device_model=serialized.data['device_model'],user=newuser)
         
         token=Token.objects.create(user=newuser)
         
@@ -162,7 +164,7 @@ class login(ObtainAuthToken):
         user.device_model=device_model
         user.save()
         
-        Analytics.objects.create(action='login',search_params='',app_version=app_version,platform=platform,brand=brand,device=device,device_model=device_model)
+        Analytics.objects.create(action='login',search_params='',app_version=app_version,platform=platform,brand=brand,device=device,device_model=device_model,user=user)
         
         if user is not None:
             if user.isactive==True:
